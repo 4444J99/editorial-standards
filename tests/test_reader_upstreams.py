@@ -11,12 +11,39 @@ SPEC.loader.exec_module(module)
 class UpstreamTests(unittest.TestCase):
     def fake(self, path):
         if "/pulls/" in path:
-            return {"merged": True, "merge_commit_sha": "a" * 40}
+            return {"merged": True, "merge_commit_sha": "a" * 40, "base": {"repo": {"id": 7}}}
         if "/commits/" in path:
             return {"sha": "b" * 40}
         if "/compare/" in path:
             return {"status": "ahead"}
-        return {"default_branch": "main"}
+        return {"id": 7, "default_branch": "main"}
+
+    def test_missing_executable_is_unmeasured_and_redacted(self):
+        def get(path):
+            raise FileNotFoundError("PRIVATE_EXECUTABLE_PATH")
+        report = module.inspect(get)
+        self.assertEqual(report["status"], "unmeasured")
+        self.assertNotIn("PRIVATE_EXECUTABLE_PATH", str(report))
+        self.assertEqual(len(report["inputs"]), 3)
+
+    def test_repository_identity_must_match_pull_base(self):
+        def get(path):
+            value = self.fake(path)
+            if "/pulls/" in path:
+                value["base"]["repo"]["id"] = 8
+            return value
+        self.assertEqual(module.inspect(get)["status"], "unmeasured")
+
+    def test_default_branch_change_invalidates_snapshot(self):
+        calls = {}
+        def get(path):
+            value = self.fake(path)
+            if "default_branch" in value:
+                calls[path] = calls.get(path, 0) + 1
+                if calls[path] > 1:
+                    value["default_branch"] = "replacement"
+            return value
+        self.assertEqual(module.inspect(get)["status"], "unmeasured")
 
     def test_accepted_inputs_are_immutable_refs(self):
         report = module.inspect(self.fake)

@@ -4,6 +4,7 @@
 import json
 import re
 import subprocess
+from urllib.parse import quote
 
 UPSTREAMS = (
     ("schema", "organvm-iv-taxis/schema-definitions", 19),
@@ -36,9 +37,12 @@ def inspect(get=github):
             merge = pr.get("merge_commit_sha")
             identity = get(f"repos/{repo}")
             branch = identity.get("default_branch")
-            if not sha(merge) or not isinstance(branch, str) or not branch:
+            repo_id = identity.get("id")
+            base_id = pr.get("base", {}).get("repo", {}).get("id")
+            if (not sha(merge) or not isinstance(branch, str) or not branch
+                    or type(repo_id) is not int or repo_id <= 0
+                    or type(base_id) is not int or base_id != repo_id):
                 raise ValueError("malformed upstream identity")
-            from urllib.parse import quote
             head = get(f"repos/{repo}/commits/{quote(branch, safe='')}").get("sha")
             if not sha(head):
                 raise ValueError("malformed upstream head")
@@ -48,10 +52,13 @@ def inspect(get=github):
             else:
                 # Detect movement during the read batch before issuing usable inputs.
                 current = get(f"repos/{repo}/commits/{quote(branch, safe='')}").get("sha")
-                if current != head:
+                after = get(f"repos/{repo}")
+                if (current != head or type(after.get("id")) is not int
+                        or after["id"] != repo_id or after.get("default_branch") != branch):
                     raise ValueError("upstream moved during observation")
-                row.update(status="accepted", merge_commit=merge, default_head=head)
-        except (ValueError, TypeError, KeyError, AttributeError, subprocess.SubprocessError):
+                row.update(status="accepted", repository_id=repo_id,
+                           merge_commit=merge, default_head=head)
+        except (OSError, ValueError, TypeError, KeyError, AttributeError, subprocess.SubprocessError):
             row["reason"] = "upstream_evidence_unavailable_or_changed"
         rows.append(row)
     return {"status": "pass" if all(r["status"] == "accepted" for r in rows) else "unmeasured",
