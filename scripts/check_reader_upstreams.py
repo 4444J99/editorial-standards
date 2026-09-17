@@ -14,7 +14,7 @@ UPSTREAMS = (
 
 
 def github(path):
-    result = subprocess.run(["gh", "api", path], capture_output=True, text=True, timeout=15)
+    result = subprocess.run(["gh", "api", "--hostname", "github.com", path], capture_output=True, text=True, timeout=15)
     if result.returncode or len(result.stdout) > 2_000_000:
         raise ValueError("upstream read unavailable")
     return json.loads(result.stdout)

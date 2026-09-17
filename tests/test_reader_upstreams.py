@@ -1,6 +1,8 @@
 import importlib.util
+import os
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 
 SPEC = importlib.util.spec_from_file_location(
     "upstreams", Path(__file__).parents[1] / "scripts/check_reader_upstreams.py")
@@ -81,3 +83,19 @@ class UpstreamTests(unittest.TestCase):
                 return {"sha": ("b" if calls[path] == 1 else "c") * 40}
             return self.fake(path)
         self.assertEqual(module.inspect(get)["status"], "unmeasured")
+
+    def test_every_github_read_pins_public_host(self):
+        def run(command, **kwargs):
+            return module.subprocess.CompletedProcess(
+                command, 0, stdout=module.json.dumps(self.fake(command[-1])))
+
+        with patch.dict(os.environ, {"GH_HOST": "github.enterprise.invalid"}):
+            with patch.object(module.subprocess, "run", side_effect=run) as request:
+                report = module.inspect(module.github)
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(request.call_count, 6 * len(module.UPSTREAMS))
+        for invocation in request.call_args_list:
+            self.assertEqual(invocation.args[0][:4],
+                             ["gh", "api", "--hostname", "github.com"])
+            self.assertEqual(invocation.kwargs,
+                             {"capture_output": True, "text": True, "timeout": 15})
