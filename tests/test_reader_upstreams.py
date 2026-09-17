@@ -12,13 +12,22 @@ SPEC.loader.exec_module(module)
 
 class UpstreamTests(unittest.TestCase):
     def fake(self, path):
+        identities = {repo_id: (f"owner/repo-{repo_id}", "main")
+                      for _, repo_id, _ in module.UPSTREAMS}
+        if path.startswith("repositories/"):
+            repo_id = int(path.split("/", 1)[1])
+            full_name, branch = identities[repo_id]
+            return {"id": repo_id, "full_name": full_name, "default_branch": branch}
         if "/pulls/" in path:
-            return {"merged": True, "merge_commit_sha": "a" * 40, "base": {"repo": {"id": 7}}}
+            repo = path.split("repos/", 1)[1].split("/pulls/", 1)[0]
+            repo_id = next(key for key, value in identities.items() if value[0] == repo)
+            return {"merged": True, "merge_commit_sha": "a" * 40,
+                    "base": {"repo": {"id": repo_id}}}
         if "/commits/" in path:
             return {"sha": "b" * 40}
         if "/compare/" in path:
             return {"status": "ahead"}
-        return {"id": 7, "default_branch": "main"}
+        raise AssertionError(path)
 
     def test_missing_executable_is_unmeasured_and_redacted(self):
         def get(path):
@@ -32,7 +41,7 @@ class UpstreamTests(unittest.TestCase):
         def get(path):
             value = self.fake(path)
             if "/pulls/" in path:
-                value["base"]["repo"]["id"] = 8
+                value["base"]["repo"]["id"] += 1
             return value
         self.assertEqual(module.inspect(get)["status"], "unmeasured")
 
@@ -40,7 +49,7 @@ class UpstreamTests(unittest.TestCase):
         calls = {}
         def get(path):
             value = self.fake(path)
-            if "default_branch" in value:
+            if path.startswith("repositories/"):
                 calls[path] = calls.get(path, 0) + 1
                 if calls[path] > 1:
                     value["default_branch"] = "replacement"
@@ -52,11 +61,15 @@ class UpstreamTests(unittest.TestCase):
         self.assertEqual(report["status"], "pass")
         self.assertEqual(len(report["inputs"]), 3)
         self.assertTrue(all(r["merge_commit"] == "a" * 40 for r in report["inputs"]))
+        self.assertTrue(all(type(r["repository_id"]) is int for r in report["inputs"]))
 
     def test_unmerged_and_nonboolean_are_not_accepted(self):
         for merged in (False, 1, "true", None):
             def get(path):
-                return {"merged": merged} if "/pulls/" in path else self.fake(path)
+                value = self.fake(path)
+                if "/pulls/" in path:
+                    value["merged"] = merged
+                return value
             self.assertEqual(module.inspect(get)["status"], "unmeasured")
 
     def test_diverged_default_does_not_accept_closed_pr(self):
@@ -66,9 +79,10 @@ class UpstreamTests(unittest.TestCase):
 
     def test_failure_is_redacted_and_other_inputs_still_inspected(self):
         seen = []
+        first_id = module.UPSTREAMS[0][1]
         def get(path):
             seen.append(path)
-            if "schema-definitions" in path:
+            if path == f"repositories/{first_id}":
                 raise ValueError("PRIVATE_CREDENTIAL")
             return self.fake(path)
         report = module.inspect(get)
@@ -82,6 +96,17 @@ class UpstreamTests(unittest.TestCase):
                 calls[path] = calls.get(path, 0) + 1
                 return {"sha": ("b" if calls[path] == 1 else "c") * 40}
             return self.fake(path)
+        self.assertEqual(module.inspect(get)["status"], "unmeasured")
+
+    def test_repository_rename_invalidates_snapshot(self):
+        calls = {}
+        def get(path):
+            value = self.fake(path)
+            if path.startswith("repositories/"):
+                calls[path] = calls.get(path, 0) + 1
+                if calls[path] > 1:
+                    value["full_name"] += "-renamed"
+            return value
         self.assertEqual(module.inspect(get)["status"], "unmeasured")
 
     def test_every_github_read_pins_public_host(self):
