@@ -16,6 +16,8 @@ from urllib.parse import unquote
 
 import yaml
 
+from raw_html_contracts import raw_html_anchor_contract_lines
+
 
 class _UniqueKeyLoader(yaml.SafeLoader):
     """Safe YAML loader that fails closed when a mapping repeats a key."""
@@ -986,7 +988,7 @@ AUDIENCE_TEMPLATES = {
 CANONICAL_ROOT_README_H1 = "# editorial-standards"
 CANONICAL_PROJECT_DESTINATIONS = {
     **{path: "../../README.md" for path in AUDIENCE_TEMPLATES},
-    Path("templates/evidence.md"): "../README.md",
+    Path("templates/evidence.md"): "../../README.md",
 }
 CANONICAL_PROJECT_LINKS = {
     path: f"[Canonical README]({destination})"
@@ -1014,7 +1016,7 @@ REQUIRED_READER_MARKERS = {
         "## Project limitations",
         "| ID | Limitation | Related assertion |",
         "## Canonical project documentation",
-        "- [Canonical README](../README.md)",
+        "- [Canonical README](../../README.md)",
     ),
     Path("templates/audiences/business.md"): (
         "# [Project]: operational edition",
@@ -3343,6 +3345,8 @@ def _markdown_contract_view(
                     raw_html_block
                 ) or _contains_visible_html_h1(raw_html_block):
                     rendered.append("<h1>")
+                rendered.extend(raw_html_anchor_contract_lines(raw_html_block))
+                rendered.append("")
                 raw_html_until_blank = False
                 raw_html_block_lines = []
             else:
@@ -3471,6 +3475,8 @@ def _markdown_contract_view(
             raw_html_block
         ):
             rendered.append("<h1>")
+        rendered.extend(raw_html_anchor_contract_lines(raw_html_block))
+        rendered.append("")
     return rendered, fenced_blocks
 
 
