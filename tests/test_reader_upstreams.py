@@ -109,6 +109,26 @@ class UpstreamTests(unittest.TestCase):
             return value
         self.assertEqual(module.inspect(get)["status"], "unmeasured")
 
+    def test_head_movement_during_final_identity_read_is_rejected(self):
+        identity_reads = {}
+        moved = set()
+
+        def get(path):
+            value = self.fake(path)
+            if path.startswith("repositories/"):
+                identity_reads[path] = identity_reads.get(path, 0) + 1
+                if identity_reads[path] == 2:
+                    moved.add(value["full_name"])
+            if "/commits/" in path:
+                repo = path.split("repos/", 1)[1].split("/commits/", 1)[0]
+                if repo in moved:
+                    value["sha"] = "c" * 40
+            return value
+
+        report = module.inspect(get)
+        self.assertEqual(report["status"], "unmeasured")
+        self.assertTrue(all(row["status"] == "unmeasured" for row in report["inputs"]))
+
     def test_every_github_read_pins_public_host(self):
         def run(command, **kwargs):
             return module.subprocess.CompletedProcess(
@@ -118,7 +138,7 @@ class UpstreamTests(unittest.TestCase):
             with patch.object(module.subprocess, "run", side_effect=run) as request:
                 report = module.inspect(module.github)
         self.assertEqual(report["status"], "pass")
-        self.assertEqual(request.call_count, 6 * len(module.UPSTREAMS))
+        self.assertEqual(request.call_count, 7 * len(module.UPSTREAMS))
         for invocation in request.call_args_list:
             self.assertEqual(invocation.args[0][:4],
                              ["gh", "api", "--hostname", "github.com"])
