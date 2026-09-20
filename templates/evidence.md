@@ -25,4 +25,4 @@ assertion's statement, class, verification state, freshness, or evidence.
 
 ## Canonical project documentation
 
-- [Canonical README](../README.md)
+- [Canonical README](../../README.md)
