@@ -63,6 +63,78 @@ class FinalBoundaryTests(unittest.TestCase):
             path.write_text(path.read_text().replace(source, replacement))
         self.assert_error('canonical quality scoring policy')
 
+    def test_quality_policy_inputs_reject_isolated_drift(self):
+        source = 'All claims are verifiable and technical details are correct.'
+        replacement = 'Award full credit without checking whether any claim is true.'
+        expected = {
+            'schemas/quality-rubric.yaml': 'canonical quality scoring policy',
+            'README.md': 'quality rubric bands',
+        }
+        originals = {relative: (self.root / relative).read_text()
+                     for relative in expected}
+        for relative, message in expected.items():
+            with self.subTest(relative=relative):
+                for candidate, original in originals.items():
+                    (self.root / candidate).write_text(original)
+                self.assertEqual(validate(self.root), [])
+                path = self.root / relative
+                self.assertIn(source, path.read_text())
+                path.write_text(path.read_text().replace(source, replacement))
+                self.assert_error(message)
+
+    def test_standalone_raw_anchor_destinations_are_audited(self):
+        for relative in ['templates/audiences/general.md', 'templates/evidence.md']:
+            path = self.root / relative
+            original = path.read_text()
+            for suffix in [
+                '\n<a href="../../README.md">\nProject home\n</a>\n',
+                '\n<a href="../../README.md">\nProject home\n</a>\n\n',
+                '\n<div>\n<a\n href="../../README.md">Home</a>\n</div>\n',
+                '\n<div>\n<a href="../../README&#46;md">Home</a>\n</div>\n',
+                '\n<a href="../../README.md" href="elsewhere">Home</a>\n',
+            ]:
+                with self.subTest(relative=relative, suffix=suffix):
+                    path.write_text(original + suffix)
+                    try:
+                        self.assert_error('duplicate canonical project link')
+                    finally:
+                        path.write_text(original)
+
+    def test_raw_html_data_cannot_supply_markdown_navigation(self):
+        path = self.root / 'templates/audiences/general.md'
+        original = path.read_text()
+        for suffix in [
+            '\n<div>\n[Home](../../README.md)\n</div>\n',
+            '\n<div>\n<!-- <a href="../../README.md">Home</a> -->\n</div>\n',
+            '\n<div>\n<script><a href="../../README.md">Home</a></script>\n</div>\n',
+            '\n<div>\n<textarea><a href="../../README.md">Home</a></textarea>\n</div>\n',
+            '\n<a href="elsewhere" href="../../README.md">Home</a>\n',
+            '\n```html\n<a href="../../README.md">Home</a>\n```\n',
+        ]:
+            with self.subTest(suffix=suffix):
+                path.write_text(original + suffix)
+                try:
+                    self.assertEqual(validate(self.root), [])
+                finally:
+                    path.write_text(original)
+
+    def test_raw_html_anchor_cannot_join_a_preceding_image(self):
+        path = self.root / 'templates/audiences/general.md'
+        path.write_text(path.read_text() + '\n![decoy\n\n'
+                        '<a href="../../README.md">\nHome\n</a>\n](image.png)\n')
+        self.assert_error('duplicate canonical project link')
+
+    def test_evidence_navigation_resolves_from_documented_destination(self):
+        path = self.root / 'templates/evidence.md'
+        content = path.read_text()
+        marker = '- [Canonical README]('
+        destination = content.split(marker, 1)[1].split(')', 1)[0]
+        deployed = self.root / 'docs/evidence/README.md'
+        self.assertEqual((deployed.parent / destination).resolve(),
+                         (self.root / 'README.md').resolve())
+        path.write_text(content.replace('(../../README.md)', '(../README.md)'))
+        self.assert_error('canonical project link')
+
     def test_seed_organ_identity(self):
         path = self.root / 'seed.yaml'
         self.assertIn('organ: V', path.read_text())
