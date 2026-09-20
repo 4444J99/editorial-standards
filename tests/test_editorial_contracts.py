@@ -3401,11 +3401,11 @@ class EditorialContractTests(unittest.TestCase):
     def test_requires_exact_visible_evidence_template_canonical_link(self) -> None:
         path = self.fixture_root / "templates/evidence.md"
         original = path.read_text(encoding="utf-8")
-        link = "- [Canonical README](../README.md)"
+        link = "- [Canonical README](../../README.md)"
         self.assertEqual(1, original.splitlines().count(link))
         mutations = (
             original.replace(f"{link}\n", "", 1),
-            original.replace("../README.md", "../missing.md", 1),
+            original.replace("../../README.md", "../../missing.md", 1),
             original.replace(link, f"<!--\n{link}\n-->", 1),
             original.replace(link, f"```markdown\n{link}\n```", 1),
             original.replace(link, f"{link}\n{link}", 1),
