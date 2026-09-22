@@ -26,7 +26,7 @@ class _RawAnchorParser(HTMLParser):
                     break
 
     def handle_endtag(self, tag):
-        if tag == self.raw_text_tag:
+        if tag == self.raw_text_tag and tag != "plaintext":
             self.raw_text_tag = None
 
     def handle_startendtag(self, tag, attrs):

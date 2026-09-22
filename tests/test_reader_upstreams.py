@@ -138,7 +138,7 @@ class UpstreamTests(unittest.TestCase):
             with patch.object(module.subprocess, "run", side_effect=run) as request:
                 report = module.inspect(module.github)
         self.assertEqual(report["status"], "pass")
-        self.assertEqual(request.call_count, 7 * len(module.UPSTREAMS))
+        self.assertEqual(request.call_count, 8 * len(module.UPSTREAMS))
         for invocation in request.call_args_list:
             self.assertEqual(invocation.args[0][:4],
                              ["gh", "api", "--hostname", "github.com"])

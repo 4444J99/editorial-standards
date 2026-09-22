@@ -68,6 +68,13 @@ def inspect(get=github):
                 final_head = get(f"repos/{repo}/commits/{quote(branch, safe='')}").get("sha")
                 if final_head != head:
                     raise ValueError("upstream moved during final identity read")
+                final_identity = get(f"repositories/{expected_repo_id}")
+                if (type(final_identity.get("id")) is not int
+                        or final_identity["id"] != repo_id
+                        or final_identity.get("full_name") != repo
+                        or final_identity.get("default_branch") != branch):
+                    raise ValueError("upstream identity moved during final head read")
+                # This is a bounded observation, not a lock on future GitHub state.
                 row.update(status="accepted", merge_commit=merge, default_head=head)
         except (OSError, ValueError, TypeError, KeyError, AttributeError, subprocess.SubprocessError):
             row["reason"] = "upstream_evidence_unavailable_or_changed"

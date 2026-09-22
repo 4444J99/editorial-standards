@@ -9,6 +9,11 @@ Run `python3 scripts/check_reader_upstreams.py` from this repository. Exit 77
 means source evidence is missing. Do not regenerate from open candidates. Exit 0
 supplies immutable merge/default refs; it does not establish CI or deployment.
 
+The resolver reports a bounded, non-atomic observation, not a lock on future
+GitHub state. It rejects observed identity/head movement; consumers must use the
+reported immutable SHAs, not resolve the branch names again for checkout. A later
+transfer or branch update requires a new observation for any new input revision.
+
 Use clean checkouts of the reported Engine and registry default refs. Verify their
 heads and registry schema. Copy Editorial's original instruction files and seed
 into an owned staging workspace containing only this repository, under Engine's
