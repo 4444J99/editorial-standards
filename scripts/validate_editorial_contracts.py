@@ -58,7 +58,8 @@ _UniqueKeyLoader.add_constructor(
 )
 
 
-CANONICAL_ORGANIZATION = "organvm"
+CANONICAL_ORGANIZATION = "4444J99"
+PUBLIC_PROCESS_ORGANIZATION = "organvm-vi-koinonia"
 CANONICAL_REPOSITORY = "editorial-standards"
 CANONICAL_SCHEMA_MERGE_SHA = "2c2b7c8b0e841a4abde82230be88524d43f9b3c2"
 CANONICAL_LICENSE_SHA256 = (
@@ -311,7 +312,7 @@ CANONICAL_PRODUCTION_EDGES = [
     },
 ]
 CANONICAL_REGISTRY_ENTRY = {
-    "repo": "organvm/editorial-standards",
+    "repo": "4444J99/editorial-standards",
     "tier": "ranked",
     "discovered": "2026-06-22",
     "value_thesis": (
@@ -350,21 +351,21 @@ CANONICAL_IDENTITY_LINES = {
         "(../../organvm-iv-taxis/schema-definitions/CLAUDE.md)",
     ),
     Path("CHANGELOG.md"): (
-        "[Unreleased]: https://github.com/organvm/editorial-standards/compare/v0.1.0...HEAD",
-        "[0.1.0]: https://github.com/organvm/editorial-standards/releases/tag/v0.1.0",
+        "[Unreleased]: https://github.com/4444J99/editorial-standards/compare/v0.1.0...HEAD",
+        "[0.1.0]: https://github.com/4444J99/editorial-standards/releases/tag/v0.1.0",
     ),
     Path("CLAUDE.md"): (
-        "**Org:** `organvm` | **Repo:** `editorial-standards`",
+        "**Org:** `4444J99` | **Repo:** `editorial-standards`",
         "- **Produces** → `ORGAN-V`: editorial-governance",
         "- **Produces** → `ORGAN-V`: frontmatter-schema",
         "- **Produces** → `ORGAN-V`: essay-templates",
         "- **Consumes** ← `organvm-iv-taxis/schema-definitions`: schema",
     ),
     Path("DISCOVERY.md"): (
-        "# Discovery: organvm/editorial-standards",
+        "# Discovery: 4444J99/editorial-standards",
     ),
     Path("GEMINI.md"): (
-        "**Org:** `organvm` | **Repo:** `editorial-standards`",
+        "**Org:** `4444J99` | **Repo:** `editorial-standards`",
         "- **Produces** → `ORGAN-V`: editorial-governance",
         "- **Produces** → `ORGAN-V`: frontmatter-schema",
         "- **Produces** → `ORGAN-V`: essay-templates",
@@ -376,22 +377,22 @@ CANONICAL_IDENTITY_LINES = {
     ),
     Path("README.md"): (
         "[![ORGAN-V: Logos](https://img.shields.io/badge/ORGAN--V-Logos-0d47a1?style=flat-square)](https://github.com/organvm)",
-        "[![CI](https://github.com/organvm/editorial-standards/actions/workflows/ci.yml/badge.svg)](https://github.com/organvm/editorial-standards/actions/workflows/ci.yml)",
-        "[![Tier: Standard](https://img.shields.io/badge/tier-standard-2196f3?style=flat-square)](https://github.com/organvm/editorial-standards)",
-        "- **[public-process](https://github.com/organvm/public-process)** — the publication venue where validated essays are deployed. public-process uses the templates and naming conventions defined here.",
-        "git clone https://github.com/organvm/editorial-standards.git",
+        "[![CI](https://github.com/4444J99/editorial-standards/actions/workflows/ci.yml/badge.svg)](https://github.com/4444J99/editorial-standards/actions/workflows/ci.yml)",
+        "[![Tier: Standard](https://img.shields.io/badge/tier-standard-2196f3?style=flat-square)](https://github.com/4444J99/editorial-standards)",
+        "- **[public-process](https://github.com/organvm-vi-koinonia/public-process)** — the publication venue where validated essays are deployed. public-process uses the templates and naming conventions defined here.",
+        "git clone https://github.com/4444J99/editorial-standards.git",
     ),
     Path("schemas/frontmatter-schema.yaml"): (
-        "# Governs: All essays in organvm/public-process/_posts/",
+        "# Governs: All essays in organvm-vi-koinonia/public-process/_posts/",
     ),
     Path("schemas/log-schema.yaml"): (
-        "# Governs: All logs in organvm/public-process/_logs/",
+        "# Governs: All logs in organvm-vi-koinonia/public-process/_logs/",
     ),
     Path("seed.yaml"): (
-        "# seed.yaml — Automation Contract for organvm/editorial-standards",
+        "# seed.yaml — Automation Contract for 4444J99/editorial-standards",
     ),
     Path("value-repos.json"): (
-        '      "repo": "organvm/editorial-standards",',
+        '      "repo": "4444J99/editorial-standards",',
     ),
 }
 IDENTITY_LINE_PREFIXES = {
@@ -642,7 +643,7 @@ REQUIRED_LOCAL_FAIL_FAST_COMMAND = "set -euo pipefail"
 REQUIRED_LOCAL_CI_BASH_BLOCKS = (
     (
         REQUIRED_LOCAL_FAIL_FAST_COMMAND,
-        "git clone https://github.com/organvm/editorial-standards.git",
+        "git clone https://github.com/4444J99/editorial-standards.git",
         "cd editorial-standards",
     ),
     (REQUIRED_LOCAL_FAIL_FAST_COMMAND, REQUIRED_CI_INSTALL_COMMAND),
@@ -748,13 +749,13 @@ IDENTITY_URL_TARGETS = {
     Path("GEMINI.md"): {CANONICAL_REPOSITORY: CANONICAL_ORGANIZATION},
     Path("README.md"): {
         CANONICAL_REPOSITORY: CANONICAL_ORGANIZATION,
-        "public-process": CANONICAL_ORGANIZATION,
+        "public-process": PUBLIC_PROCESS_ORGANIZATION,
     },
     Path("ecosystem.yaml"): {CANONICAL_REPOSITORY: CANONICAL_ORGANIZATION},
     Path("schemas/frontmatter-schema.yaml"): {
-        "public-process": CANONICAL_ORGANIZATION,
+        "public-process": PUBLIC_PROCESS_ORGANIZATION,
     },
-    Path("schemas/log-schema.yaml"): {"public-process": CANONICAL_ORGANIZATION},
+    Path("schemas/log-schema.yaml"): {"public-process": PUBLIC_PROCESS_ORGANIZATION},
     Path("seed.yaml"): {CANONICAL_REPOSITORY: CANONICAL_ORGANIZATION},
     Path("value-repos.json"): {CANONICAL_REPOSITORY: CANONICAL_ORGANIZATION},
 }
@@ -1388,7 +1389,7 @@ PUBLICATION_TEMPLATE_LIST_PLACEHOLDERS = {
     (Path("templates/retrospective.md"), "tags"): ("retrospective",),
 }
 RELATED_REPOSITORY_PATTERN = (
-    r"^(?:organvm|organvm-(?:i|ii|iii|iv|v|vi|vii|viii)-[a-z0-9]+"
+    r"^(?:4444[jJ]99|organvm|organvm-(?:i|ii|iii|iv|v|vi|vii|viii)-[a-z0-9]+"
     r"(?:-[a-z0-9]+)*|meta-organvm(?:-[a-z0-9]+)*)/"
     r"(?![.]{1,2}$)[A-Za-z0-9._-]{1,100}$"
 )
@@ -3562,7 +3563,7 @@ def _expected_frontmatter_readme_cells(
     ):
         constraint = (
             "Canonical ORGANVM `owner/repository` slugs, such as "
-            "`organvm/essay-pipeline`"
+            "`4444J99/essay-pipeline`"
         )
     elif field == "reading_time" and rules.get("pattern") == READING_TIME_PATTERN:
         constraint = "e.g. `12 min`"
@@ -5390,8 +5391,10 @@ def validate(root: Path) -> list[str]:
         )
         related_pattern = None
     valid_related_repos = (
-        "organvm/essay-pipeline",
-        "organvm/editorial-standards",
+        "4444j99/portfolio",
+        "4444J99/organvm-engine",
+        "4444J99/essay-pipeline",
+        "4444J99/editorial-standards",
         "organvm/.github",
         "organvm-iv-taxis/schema-definitions",
         "organvm-i-theoria/4-ivi374-F0Rivi4",
@@ -5401,9 +5404,9 @@ def validate(root: Path) -> list[str]:
     )
     invalid_related_repos = (
         "essay-pipeline",
-        "github.com/organvm/essay-pipeline",
+        "github.com/4444J99/essay-pipeline",
         "other/essay-pipeline",
-        "4444j99/portfolio",
+        "4444j99-evil/portfolio",
         "local/_portal",
         "organvm-evil/essay-pipeline",
         "organvm/",
@@ -5412,8 +5415,8 @@ def validate(root: Path) -> list[str]:
         "organvm//essay-pipeline",
         "organvm/../essay-pipeline",
         "organvm/essay pipeline",
-        "organvm/essay-pipeline/readme",
-        "organvm/essay-pipeline?tab=readme",
+        "4444J99/essay-pipeline/readme",
+        "4444J99/essay-pipeline?tab=readme",
     )
     if related_pattern is not None:
         for slug in valid_related_repos:

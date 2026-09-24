@@ -3,7 +3,7 @@
   "description": "Ranked-tier registry of repos with discovered latent value. Build-out follows promotion into this list.",
   "value_repos": [
     {
-      "repo": "organvm/editorial-standards",
+      "repo": "4444J99/editorial-standards",
       "tier": "ranked",
       "discovered": "2026-06-22",
       "value_thesis": "Only repo in the estate expressing documentation quality as a machine-readable, versioned contract (6 YAML schemas + 100-point rubric + 6 publication templates), already consumed by essay-pipeline and public-process. Highest latent value: a reusable docs-quality standard the whole eight-organ estate could adopt once enforcement is co-located with the schema.",

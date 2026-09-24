@@ -1,4 +1,4 @@
-# seed.yaml — Automation Contract for organvm/editorial-standards
+# seed.yaml — Automation Contract for 4444J99/editorial-standards
 # Schema: seed/v1.0
 # Generated: 2026-02-17 (LOGOS Sprint)
 
@@ -6,7 +6,7 @@ schema_version: "1.0"
 organ: V
 organ_name: Public Process
 repo: editorial-standards
-org: organvm
+org: 4444J99
 
 metadata:
   implementation_status: PRODUCTION

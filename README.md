@@ -3,8 +3,8 @@
 Maintainers: [Reader-mode context regeneration and acceptance](docs/reader-mode-regeneration.md).
 
 [![ORGAN-V: Logos](https://img.shields.io/badge/ORGAN--V-Logos-0d47a1?style=flat-square)](https://github.com/organvm)
-[![CI](https://github.com/organvm/editorial-standards/actions/workflows/ci.yml/badge.svg)](https://github.com/organvm/editorial-standards/actions/workflows/ci.yml)
-[![Tier: Standard](https://img.shields.io/badge/tier-standard-2196f3?style=flat-square)](https://github.com/organvm/editorial-standards)
+[![CI](https://github.com/4444J99/editorial-standards/actions/workflows/ci.yml/badge.svg)](https://github.com/4444J99/editorial-standards/actions/workflows/ci.yml)
+[![Tier: Standard](https://img.shields.io/badge/tier-standard-2196f3?style=flat-square)](https://github.com/4444J99/editorial-standards)
 
 _Voice, quality, and structure governance for the ORGAN-V discourse layer_
 
@@ -127,7 +127,7 @@ source of truth. It currently requires 12 fields:
 | `category` | enum | `meta-system`, `case-study`, `retrospective`, `guide`, or `methodology` |
 | `excerpt` | string | 50–400 characters |
 | `portfolio_relevance` | enum | `CRITICAL`, `HIGH`, or `MEDIUM` |
-| `related_repos` | list | Canonical ORGANVM `owner/repository` slugs, such as `organvm/essay-pipeline` |
+| `related_repos` | list | Canonical ORGANVM `owner/repository` slugs, such as `4444J99/essay-pipeline` |
 | `reading_time` | string | e.g. `12 min` |
 | `word_count` | integer | minimum 500 |
 | `references` | list | citations, or an explicit empty list |
@@ -289,8 +289,8 @@ editorial-standards is part of ORGAN-V (Logos / Public Process), the discourse a
 
 Within ORGAN-V, it connects to:
 
-- **[essay-pipeline](https://github.com/organvm/essay-pipeline)** — the automated pipeline that validates, transforms, and deploys essays. essay-pipeline consumes the frontmatter schema and document type definitions from this repository to validate incoming drafts.
-- **[public-process](https://github.com/organvm/public-process)** — the publication venue where validated essays are deployed. public-process uses the templates and naming conventions defined here.
+- **[essay-pipeline](https://github.com/4444J99/essay-pipeline)** — the automated pipeline that validates, transforms, and deploys essays. essay-pipeline consumes the frontmatter schema and document type definitions from this repository to validate incoming drafts.
+- **[public-process](https://github.com/organvm-vi-koinonia/public-process)** — the publication venue where validated essays are deployed. public-process uses the templates and naming conventions defined here.
 
 The relationship is directional: editorial-standards defines the rules, essay-pipeline enforces them, and public-process displays the results. Changes to editorial standards flow downstream through the pipeline to the publication layer.
 
@@ -308,7 +308,7 @@ adversarial regressions are Python.
 
 ```bash
 set -euo pipefail
-git clone https://github.com/organvm/editorial-standards.git
+git clone https://github.com/4444J99/editorial-standards.git
 cd editorial-standards
 ```
 

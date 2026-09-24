@@ -797,7 +797,7 @@ class EditorialContractTests(unittest.TestCase):
             ),
             (
                 "seed.yaml",
-                "Automation Contract for organvm/editorial-standards",
+                "Automation Contract for 4444J99/editorial-standards",
                 "Automation Contract for other/editorial-standards",
                 "canonical identity line",
             ),
@@ -841,12 +841,12 @@ class EditorialContractTests(unittest.TestCase):
         mutations = (
             (
                 "CHANGELOG.md",
-                "github.com/organvm/editorial-standards/compare",
+                "github.com/4444J99/editorial-standards/compare",
                 "github.com/other/editorial-standards/compare",
             ),
             (
                 "DISCOVERY.md",
-                "# Discovery: organvm/editorial-standards",
+                "# Discovery: 4444J99/editorial-standards",
                 "# Discovery: other/editorial-standards",
             ),
             (
@@ -856,22 +856,22 @@ class EditorialContractTests(unittest.TestCase):
             ),
             (
                 "README.md",
-                "https://github.com/organvm/public-process",
+                "https://github.com/organvm-vi-koinonia/public-process",
                 "https://github.com/other/public-process",
             ),
             (
                 "schemas/frontmatter-schema.yaml",
-                "organvm/public-process/_posts/",
+                "organvm-vi-koinonia/public-process/_posts/",
                 "other/public-process/_posts/",
             ),
             (
                 "schemas/log-schema.yaml",
-                "organvm/public-process/_logs/",
+                "organvm-vi-koinonia/public-process/_logs/",
                 "other/public-process/_logs/",
             ),
             (
                 "value-repos.json",
-                '"repo": "organvm/editorial-standards"',
+                '"repo": "4444J99/editorial-standards"',
                 '"repo": "other/editorial-standards"',
             ),
         )
@@ -950,7 +950,7 @@ class EditorialContractTests(unittest.TestCase):
             ("[]\n", "registry root must be a JSON mapping"),
             ('{"value_repos": {}}\n', "value_repos must be a JSON list"),
             (
-                '{"value_repos": ["organvm/editorial-standards"]}\n',
+                '{"value_repos": ["4444J99/editorial-standards"]}\n',
                 "value_repos entries must be JSON mappings",
             ),
             (
@@ -959,8 +959,8 @@ class EditorialContractTests(unittest.TestCase):
             ),
             (
                 '{"value_repos": ['
-                '{"repo": "organvm/editorial-standards"}, '
-                '{"repo": "organvm/editorial-standards"}]}\n',
+                '{"repo": "4444J99/editorial-standards"}, '
+                '{"repo": "4444J99/editorial-standards"}]}\n',
                 "found 2",
             ),
         )
@@ -3160,7 +3160,7 @@ class EditorialContractTests(unittest.TestCase):
             ),
             (
                 "related_repos: []",
-                'related_repos: ["organvm/editorial-standards\\n"]',
+                'related_repos: ["4444J99/editorial-standards\\n"]',
                 "field related_repos[0]",
             ),
             (

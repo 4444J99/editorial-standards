@@ -45,5 +45,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MIT License
 - CHANGELOG.md
 
-[Unreleased]: https://github.com/organvm/editorial-standards/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/organvm/editorial-standards/releases/tag/v0.1.0
+[Unreleased]: https://github.com/4444J99/editorial-standards/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/4444J99/editorial-standards/releases/tag/v0.1.0

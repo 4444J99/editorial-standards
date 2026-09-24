@@ -1,4 +1,4 @@
-# Discovery: organvm/editorial-standards
+# Discovery: 4444J99/editorial-standards
 
 **Date:** 2026-06-22
 **Verdict:** REAL LATENT VALUE — promote to ranked tier.
