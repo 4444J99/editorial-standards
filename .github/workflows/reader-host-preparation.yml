@@ -1,0 +1,75 @@
+name: Reader hosting preparation
+on:
+  push:
+    branches: [verify/reader-finalization-20260924]
+    paths: [.github/workflows/reader-host-preparation.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Prepare exact source-hosting changes for the existing PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir evidence
+          python3 - <<'PY'
+          import base64, hashlib, json, os, pathlib, urllib.request
+          REPO='4444J99/editorial-standards'
+          BASE='40125c095e1a62821e325805b90dab4a57f989fc'
+          expected={
+              'CHANGELOG.md':('4c71f84b5ba46b7c4482e8b0fda361d90d59071d','042780d389419b4f30902ea4a0757ec7ba0f3760'),
+              'DISCOVERY.md':('f63927e4b66399d5b61136400032f64d15103679','ffe104c4415e2345dbdd063566eb729b88fbba83'),
+              'README.md':('bb74466a3c1b6ee1d538c742b3730d3605e2ec1b','bd59491f1a42d971c6c4dd507e221372b7b6f89e'),
+              'schemas/frontmatter-schema.yaml':('aff9a631df5c42775bbc74f823bc4320556c38e1','ca3478308c6516464cb8c6ead39eb46c29b2d936'),
+              'schemas/log-schema.yaml':('3621bf1cbc758a9bf9261cd54f83c19423faec46','3ef771e0b65af42bed20a348daa83025676d0192'),
+              'scripts/validate_editorial_contracts.py':('885373b139bd07f685e580658a55646d485df965','81435f6ccc49c551f109ef366a769ba3a6e69d8c'),
+              'seed.yaml':('609ae2cdb70b40515e12d3a6ec0911a62bf0c248','5403da3e37169d15850cbe548307bc0503d3b71a'),
+              'tests/test_editorial_contracts.py':('10dccdfd80ba7549da8b9bde5054396a344b6d6e','63816230d8dac198e78184cb939c63a8fa4ddf16'),
+              'value-repos.json':('67736d0216a16efd8b736a4c59174ecc89a4cb60','0f3e6defe289e5b18500d13dab381042df240294'),
+          }
+          def api(path,method='GET',body=None):
+              req=urllib.request.Request('https://api.github.com/'+path,headers={'Accept':'application/vnd.github+json','User-Agent':'reader-hosting-preparation','Authorization':'Bearer '+os.environ['GH_TOKEN']},method=method,data=None if body is None else json.dumps(body).encode())
+              with urllib.request.urlopen(req,timeout=30) as r:return json.load(r)
+          def blob(b):return hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest()
+          for rid,slug in [(1160364281,REPO),(1160364179,'4444J99/essay-pipeline'),(1154865430,'organvm-vi-koinonia/public-process')]:
+              observed=api(f'repositories/{rid}')
+              assert observed['id']==rid and observed['full_name']==slug and observed['private'] is False
+          assert api(f'repos/{REPO}/git/ref/heads/codex/reader-mode-v1-20260831')['object']['sha']==BASE
+          elements=[]
+          for name,(before,after) in expected.items():
+              value=api(f'repos/{REPO}/contents/{name}?ref={BASE}')
+              raw=base64.b64decode(value['content']);assert value['sha']==blob(raw)==before,name
+              s=raw.decode().replace('organvm/editorial-standards','4444J99/editorial-standards').replace('organvm/essay-pipeline','4444J99/essay-pipeline').replace('organvm/public-process','organvm-vi-koinonia/public-process')
+              if name=='seed.yaml':s=s.replace('\norg: organvm\n','\norg: 4444J99\n')
+              if name=='scripts/validate_editorial_contracts.py':
+                  s=s.replace('CANONICAL_ORGANIZATION = "organvm"','CANONICAL_ORGANIZATION = "4444J99"\nPUBLIC_PROCESS_ORGANIZATION = "organvm-vi-koinonia"')
+                  s=s.replace('**Org:** `organvm` | **Repo:** `editorial-standards`','**Org:** `4444J99` | **Repo:** `editorial-standards`')
+                  s=s.replace('"public-process": CANONICAL_ORGANIZATION','"public-process": PUBLIC_PROCESS_ORGANIZATION')
+                  s=s.replace('        "4444j99/portfolio",\n','')
+                  s=s.replace('    valid_related_repos = (\n','    valid_related_repos = (\n        "4444j99/portfolio",\n        "4444J99/organvm-engine",\n')
+                  s=s.replace('        "other/essay-pipeline",\n','        "other/essay-pipeline",\n        "4444j99-evil/portfolio",\n')
+              if name in ('scripts/validate_editorial_contracts.py','schemas/frontmatter-schema.yaml'):
+                  s=s.replace('^(?:organvm|organvm-', '^(?:4444[jJ]99|organvm|organvm-')
+              assert blob(s.encode())==after,(name,blob(s.encode()),after)
+              elements.append({'path':name,'mode':'100644','type':'blob','content':s})
+          parent=api(f'repos/{REPO}/git/commits/{BASE}')
+          tree=api(f'repos/{REPO}/git/trees','POST',{'base_tree':parent['tree']['sha'],'tree':elements})
+          commit=api(f'repos/{REPO}/git/commits','POST',{'message':'fix(reader): bind canonical references to verified personal hosting','tree':tree['sha'],'parents':[BASE]})
+          receipt={'parent':BASE,'commit':commit['sha'],'tree':tree['sha'],'files':expected,'generated_files_edited':False,'scope':'Source hosting preparation only; full acceptance still requires native generated contexts and final-head tests.','status':'prepared_commit_ref_not_advanced'}
+          pathlib.Path('evidence/prepared-commit.json').write_text(json.dumps(receipt,indent=2)+'\n')
+          print(json.dumps(receipt,indent=2))
+          PY
+      - name: Retain preparation receipt
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: reader-host-preparation-${{ github.run_id }}
+          path: evidence/
+          retention-days: 7
+          if-no-files-found: error
