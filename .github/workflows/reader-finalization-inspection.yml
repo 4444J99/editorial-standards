@@ -1,0 +1,60 @@
+name: Reader finalization inspection
+on:
+  push:
+    branches: [verify/reader-finalization-20260924]
+    paths: [.github/workflows/reader-finalization-inspection.yml]
+  workflow_dispatch:
+permissions: {}
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Capture immutable public source and review state
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p sources evidence
+          python3 - <<'PY'
+          import json, pathlib, subprocess, urllib.request
+          root = pathlib.Path.cwd()
+          def get(path):
+              req = urllib.request.Request('https://api.github.com/' + path, headers={'User-Agent':'reader-finalization'})
+              return json.load(urllib.request.urlopen(req, timeout=30))
+          inputs = [
+              (1160364281, '40125c095e1a62821e325805b90dab4a57f989fc', 'editorial', 12),
+              (1160447354, 'cc01b80019dde6280a8f4344f657804c24972394', 'engine', 205),
+              (1160447325, '7d24764d3b1ac5916b7ba51e05c02f0a24a25bcf', 'schema-definitions', 19),
+          ]
+          rows = []
+          for rid, head, name, number in inputs:
+              identity = get(f'repositories/{rid}')
+              assert identity['id'] == rid and identity['private'] is False
+              repo = identity['full_name']
+              target = root / 'sources' / name
+              subprocess.run(['git','init','-q',str(target)], check=True)
+              subprocess.run(['git','-C',str(target),'remote','add','origin',f'https://github.com/{repo}.git'],check=True)
+              subprocess.run(['git','-C',str(target),'-c','credential.helper=','fetch','--depth=1','origin',head],check=True)
+              subprocess.run(['git','-C',str(target),'checkout','--detach','-q','FETCH_HEAD'],check=True)
+              assert subprocess.check_output(['git','-C',str(target),'rev-parse','HEAD'],text=True).strip() == head
+              assert get(f'repositories/{rid}')['full_name'] == repo
+              row = dict(repository_id=rid, repository=repo, head=head, name=name)
+              row['reviews'] = get(f'repos/{repo}/pulls/{number}/reviews?per_page=100')
+              if name == 'editorial':
+                  row['recent_comments'] = get(f'repos/{repo}/pulls/{number}/comments?since=2026-09-22T14:22:00Z&per_page=100')
+              try:
+                  row['rules'] = get(f'repos/{repo}/rules/branches/main')
+              except Exception as exc:
+                  row['rules_unavailable'] = type(exc).__name__
+              rows.append(row)
+          (root/'evidence'/'source-identities.json').write_text(json.dumps(rows,indent=2)+'\n')
+          PY
+          tar -czf evidence/public-source-checkouts.tar.gz sources
+          sha256sum evidence/public-source-checkouts.tar.gz > evidence/SHA256SUMS
+      - name: Retain public-source inspection inputs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: reader-finalization-inspection-${{ github.run_id }}
+          path: evidence/
+          retention-days: 7
+          if-no-files-found: error
