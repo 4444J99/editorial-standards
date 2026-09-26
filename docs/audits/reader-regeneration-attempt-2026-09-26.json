@@ -16,7 +16,8 @@
     "standard_dry_run": {"updated_repository_files": 3, "errors": 0},
     "standard_apply_staging_only": {"updated_repository_files": 3, "errors": 0},
     "receipted_apply_staging_only": {"updated_repository_files": 3, "errors": 0},
-    "observed_defect": "The standard CLAUDE.md and GEMINI.md output substitutes unknown library counts, emits a machine-specific absolute library path, and removes the existing directive and telemetry sections. Receipted output removes those sections and the agent-specific prompting context entirely; its CLAUDE.md and GEMINI.md bytes are identical. Copyback would lose currently carried guidance without an accepted replacement or disposition.",
+    "observed_defect": "The standard CLAUDE.md and GEMINI.md output substitutes unknown library counts, emits a machine-specific absolute library path, and removes the existing directive and telemetry sections. Receipted output removes those sections and the agent-specific prompting context entirely; its CLAUDE.md and GEMINI.md bytes are identical. Both profiles change AGENTS.md's schema reference from the validator-required relative target to a remote URL. Copyback would lose currently carried guidance and fail the owning contract.",
+    "receipted_candidate_validation": {"command": "python3 -m unittest discover -s tests -q", "tests": 153, "failures": 72, "cause": "The generated AGENTS.md remote schema URL violates the pinned canonical relative-link contract in Editorial's validator fixtures."},
     "copyback": false,
     "originals_unchanged": true
   },
@@ -26,5 +27,5 @@
     "GEMINI.md": {"original": "0d5fe69436163c526c23a527c1c3502ade1fb62d3bb43f3c309d4c3f3673204e", "standard": "b742460487a9917b2d0b4a0e187f1485cf48c713c4c29d31361ee269d6", "receipted": "d0765b57d3782541071e15788fa6babd6f2d88dc018823eb452b41a87f5b704e"}
   },
   "disposition": "blocked_on_generator_context_custody",
-  "next_predicate": "Repair the accepted Engine generator or supply its complete approved context inputs so all three outputs are portable and every existing directive has an evidence-backed retained or superseded disposition; rerun generation in staging, verify full-file digests and Editorial contracts, then copy back."
+  "next_predicate": "Repair the accepted Engine generator and Editorial's canonical-link agreement, or supply complete approved context inputs with an independently reviewed contract update. All three outputs must be portable and each existing directive must have an evidence-backed retained or superseded disposition. Rerun generation in staging, require all 153 Editorial tests and full-file digests to pass, then copy back."
 }
