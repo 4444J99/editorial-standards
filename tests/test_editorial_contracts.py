@@ -791,7 +791,7 @@ class EditorialContractTests(unittest.TestCase):
         mutations = (
             (
                 "seed.yaml",
-                "org: organvm",
+                "org: 4444J99",
                 "org: organvm-v-logos",
                 "organvm-v-logos",
             ),
@@ -803,13 +803,13 @@ class EditorialContractTests(unittest.TestCase):
             ),
             (
                 "CLAUDE.md",
-                "**Org:** `organvm`",
+                "**Org:** `4444J99`",
                 "**Org:** `organvm-v-logos`",
                 "organvm-v-logos",
             ),
             (
                 "GEMINI.md",
-                "**Org:** `organvm`",
+                "**Org:** `4444J99`",
                 "**Org:** `organvm-v-logos`",
                 "organvm-v-logos",
             ),
@@ -922,7 +922,7 @@ class EditorialContractTests(unittest.TestCase):
         path.write_text(
             original
             + "\nCase-equivalent route: "
-            + "HTTPS://GITHUB.COM/OrGaNvM/EDITORIAL-STANDARDS\n",
+            + "HTTPS://GITHUB.COM/4444j99/EDITORIAL-STANDARDS\n",
             encoding="utf-8",
         )
         self.assertEqual([], validate(self.fixture_root))
@@ -3048,8 +3048,8 @@ class EditorialContractTests(unittest.TestCase):
         self.assertIn("    item_pattern: >-\n", original)
         path.write_text(
             original.replace(
-                "    item_pattern: >-\n      ^(?:organvm|",
-                "    item_pattern: '[unterminated'\n    ignored_pattern: >-\n      ^(?:organvm|",
+                "    item_pattern: >-\n      ^(?:4444[jJ]99|organvm|",
+                "    item_pattern: '[unterminated'\n    ignored_pattern: >-\n      ^(?:4444[jJ]99|organvm|",
                 1,
             ),
             encoding="utf-8",
