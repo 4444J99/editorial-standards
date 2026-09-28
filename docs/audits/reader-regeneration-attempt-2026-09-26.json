@@ -1,0 +1,31 @@
+{
+  "schema": "editorial.reader_regeneration_attempt.v1",
+  "observed_at": "2026-09-26T02:22:38Z",
+  "owner": "4444J99/editorial-standards#12",
+  "candidate_head": "38450a2bb152e66907ef63dc4a71d6b8ee20e85c",
+  "source_ancestry": {
+    "predicate": "python3 scripts/check_reader_upstreams.py",
+    "result": "pass",
+    "schema": {"repository_id": 1160447325, "default_head": "7d24764d3b1ac5916b7ba51e05c02f0a24a25bcf"},
+    "registry": {"repository_id": 1155264900, "default_head": "81ba4d6e6d6e44ad5dcb35e9b1677ffdc0ff41c1"},
+    "engine": {"repository_id": 1160447354, "default_head": "0110ec7998a67a946da9067195b98073f5726470"}
+  },
+  "generation": {
+    "scope": "isolated staging containing only this repository under ORGAN-V; private registry read from its immutable checkout; no copyback",
+    "call": "organvm_engine.contextmd.sync.sync_all(workspace=isolated_workspace, registry_path=accepted_registry_file, organs=['ORGAN-V'], additional_workspace_roots=[])",
+    "standard_dry_run": {"updated_repository_files": 3, "errors": 0},
+    "standard_apply_staging_only": {"updated_repository_files": 3, "errors": 0},
+    "receipted_apply_staging_only": {"updated_repository_files": 3, "errors": 0},
+    "observed_defect": "The standard CLAUDE.md and GEMINI.md output substitutes unknown library counts, emits a machine-specific absolute library path, and removes the existing directive and telemetry sections. Receipted output removes those sections and the agent-specific prompting context entirely; its CLAUDE.md and GEMINI.md bytes are identical. Both profiles change AGENTS.md's schema reference from the validator-required relative target to a remote URL. Copyback would lose currently carried guidance and fail the owning contract.",
+    "receipted_candidate_validation": {"command": "python3 -m unittest discover -s tests -q", "tests": 153, "failures": 72, "cause": "The generated AGENTS.md remote schema URL violates the pinned canonical relative-link contract in Editorial's validator fixtures."},
+    "copyback": false,
+    "originals_unchanged": true
+  },
+  "sha256": {
+    "AGENTS.md": {"original": "36b4953ff502da57388740a74e3c8333e72a0fdaede53b20a730727d818b7c89", "standard": "41b6899a1f30dfbdacc43339f47726a90c317c00fa563b570988930e48e055f3", "receipted": "87e6162fa05f68aceaa033cb99648085033c856ee1aac7158b27dde1913ac522"},
+    "CLAUDE.md": {"original": "a65004a523d38977b65c69565223de3adc4dfd8436a869eff039d5f35f32b2fa", "standard": "14cd2e1e624f33e6487d4b3bef248d3f432361c7e94bca6183bfc7fccd25f412", "receipted": "d0765b57d3782541071e15788fa6babd6f2d88dc018823eb452b41a87f5b704e"},
+    "GEMINI.md": {"original": "0d5fe69436163c526c23a527c1c3502ade1fb62d3bb43f3c309d4c3f3673204e", "standard": "b742460487a9917b2d0b4a0e187f1485cf48c713c4c29d31361ee269d6", "receipted": "d0765b57d3782541071e15788fa6babd6f2d88dc018823eb452b41a87f5b704e"}
+  },
+  "disposition": "blocked_on_generator_context_custody",
+  "next_predicate": "Repair the accepted Engine generator and Editorial's canonical-link agreement, or supply complete approved context inputs with an independently reviewed contract update. All three outputs must be portable and each existing directive must have an evidence-backed retained or superseded disposition. Rerun generation in staging, require all 153 Editorial tests and full-file digests to pass, then copy back."
+}

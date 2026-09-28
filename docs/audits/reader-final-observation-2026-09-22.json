@@ -1,0 +1,51 @@
+{
+  "observed_at": "2026-09-22T14:16:43.457543+00:00",
+  "source_parent": "e19b805a00ff6cb54ef207065f07b29e7aa36278",
+  "parent_tree": "c1b5b265f6b06d956e94550546df9e1e31e7a8b4",
+  "repository_id": 1160364281,
+  "scope": "Public-source sandbox execution; not native or external hosted CI, private generation, transfer, merge, or runtime acceptance.",
+  "runtime": "CPython 3.12.14",
+  "dependency": "PyYAML 6.0.3 from unchanged --require-hashes --only-binary=:all: requirements-ci.txt",
+  "tests": 153,
+  "failures": 0,
+  "skips": 0,
+  "wall_seconds": 49.256,
+  "negative_control": {
+    "tests": 4,
+    "failures": 5,
+    "notes": "Four identity mutation subcases and the self-closing plaintext case fail against original source. Other plaintext controls already passed in this Python runtime."
+  },
+  "validator": "6 publication and 7 reader-mode templates accepted",
+  "compileall_exit": 0,
+  "files": {
+    "scripts/check_reader_upstreams.py": {
+      "before_blob": "5918d3431ad7c58251f66c55751b9518bdb6280c",
+      "after_blob": "ed603cd6e4b1b86b537b9413a10cad6cf005818d",
+      "sha256": "8af58da0bf0d88d76d68d83d480222a1ac4182b367c376e741a291d40ca3add0"
+    },
+    "scripts/raw_html_contracts.py": {
+      "before_blob": "b4402959070bdd2062166e1cdbb95e89c88f4660",
+      "after_blob": "0eb3bd325df5bd8495d609e2b74890e18e6b4778",
+      "sha256": "a4d03b9b94f6ccac58baa83f999ddef81366acfbe41a1a5ab0a8b0d6e24a7f4d"
+    },
+    "tests/test_reader_upstreams.py": {
+      "before_blob": "aa88acb573d0039c0edf4be891c2e454106c5f3f",
+      "after_blob": "429e33fe02858f292f11fa0c30ca5283f9707ae3",
+      "sha256": "977f62c2547e81dfa08945af4e74f542552c266ca80b1f62a3a0b2ae9fff75ef"
+    },
+    "tests/test_reader_final_observation.py": {
+      "before_blob": null,
+      "after_blob": "d63a7d4714d5a77990b8efd6f8a5de24fbad2345",
+      "sha256": "f837e15a0030c1d24e14b03f34b01448f96ec232a4cf900a52a44eab2a6412ed"
+    },
+    "docs/reader-mode-regeneration.md": {
+      "before_blob": "51c08e6ca75395d3423c290cfadc5ceeccf5a028",
+      "after_blob": "4107c9a2c8d126bea1cb0800a72353e957710f72",
+      "sha256": "135580ed498cfd871874d4f49a72395a080de36832e01a200eae75c6d253a4ef"
+    }
+  },
+  "patch_sha256": "48bc6fb589dd34415d8f6ab57a1995e7326da407f1d66b97e319de3af8c2f5a4",
+  "suite_log_sha256": "e8d87d7f1a9b53e1aaf5eadc3d146ee18b9cd1eabff78b788dfda5b1f71d6747",
+  "review_findings": [4058426425, 4058426428],
+  "generated_instruction_files_changed": false
+}
