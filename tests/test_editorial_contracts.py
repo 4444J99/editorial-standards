@@ -42,6 +42,19 @@ class EditorialContractTests(unittest.TestCase):
             f"Expected {expected!r} in contract errors: {errors}",
         )
 
+    def test_allows_pinned_supported_hosted_runner(self) -> None:
+        path = self.fixture_root / ".github/workflows/ci.yml"
+        path.write_text(path.read_text().replace("runs-on: ubuntu-latest", "runs-on: ubuntu-24.04"))
+        self.assertEqual([], validate(self.fixture_root))
+
+    def test_rejects_unapproved_runner_and_expression(self) -> None:
+        path = self.fixture_root / ".github/workflows/ci.yml"
+        original = path.read_text()
+        for runner in ("self-hosted", "windows-latest", "ubuntu-22.04", "${{ inputs.runner }}"):
+            with self.subTest(runner=runner):
+                path.write_text(original.replace("runs-on: ubuntu-latest", "runs-on: " + runner))
+                self.assert_contract_error("validate job runner must be exactly")
+
     def test_repository_satisfies_complete_editorial_contract(self) -> None:
         self.assertEqual([], validate(self.fixture_root))
 

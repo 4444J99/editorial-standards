@@ -568,7 +568,7 @@ REQUIRED_HOSTED_CI_COMMAND_STEPS = (
         "python3 -m unittest discover -s tests -v",
     ),
 )
-REQUIRED_HOSTED_CI_RUNNER = "ubuntu-latest"
+ALLOWED_HOSTED_CI_RUNNERS = ("ubuntu-latest", "ubuntu-24.04")
 REQUIRED_HOSTED_CI_NAME = "Editorial Standards CI"
 REQUIRED_HOSTED_CI_PERMISSIONS = {"contents": "read"}
 REQUIRED_HOSTED_CI_JOB_KEYS = {"runs-on", "steps"}
@@ -4172,10 +4172,10 @@ def _validate_readme(
                 ".github/workflows/ci.yml: validate job execution controls "
                 f"are forbidden: {job_controls}"
             )
-        if validate_job.get("runs-on") != REQUIRED_HOSTED_CI_RUNNER:
+        if validate_job.get("runs-on") not in ALLOWED_HOSTED_CI_RUNNERS:
             errors.append(
                 ".github/workflows/ci.yml: validate job runner must be exactly "
-                f"{REQUIRED_HOSTED_CI_RUNNER!r}"
+                f"one of {ALLOWED_HOSTED_CI_RUNNERS!r}"
             )
         if set(validate_job) != REQUIRED_HOSTED_CI_JOB_KEYS:
             errors.append(
