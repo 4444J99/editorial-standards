@@ -31,6 +31,19 @@ class EditorialContractTests(unittest.TestCase):
             self.fixture_root,
             ignore=shutil.ignore_patterns(".git", "__pycache__"),
         )
+        # Mutation tests anchor on a known runner line. The live workflow may use
+        # any allowed runner (e.g. the pinned ubuntu-24.04), so normalize the
+        # fixture copy; test_live_repository_satisfies_contract checks the real file.
+        workflow = self.fixture_root / ".github/workflows/ci.yml"
+        workflow.write_text(
+            workflow.read_text(encoding="utf-8").replace(
+                "runs-on: ubuntu-24.04", "runs-on: ubuntu-latest"
+            ),
+            encoding="utf-8",
+        )
+
+    def test_live_repository_satisfies_contract(self) -> None:
+        self.assertEqual([], validate(REPO_ROOT))
 
     def tearDown(self) -> None:
         self.temporary_directory.cleanup()
