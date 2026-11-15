@@ -2008,12 +2008,12 @@ class EditorialContractTests(unittest.TestCase):
         checkout = (
             "      - name: Checkout code\n"
             "        uses: actions/checkout@"
-            "9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0\n"
+            "3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1\n"
         )
         setup = (
             "      - name: Set up Python\n"
             "        uses: actions/setup-python@"
-            "5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0\n"
+            "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0\n"
             "        with:\n"
             "          python-version: \"3.12\"\n"
         )
@@ -2038,7 +2038,7 @@ class EditorialContractTests(unittest.TestCase):
             (
                 checkout,
                 checkout.replace(
-                    "9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0",
+                    "3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1",
                     "v7",
                 ),
             ),
